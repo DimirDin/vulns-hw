@@ -9,35 +9,18 @@
 ### 1.1 Установка Metasploitable
 - Скачан образ `Metasploitable2-Linux.zip` со страницы  
   https://sourceforge.net/projects/metasploitable/
-- Распакован и импортирован в VirtualBox (сетевой адаптер – «Сетевой мост»).
-- IP-адрес атакуемой ВМ: `192.168.1.50` (пример, укажите свой).
+- Распакован и импортирован в UTM (сетевой адаптер – «Общая сеть»).
+- IP-адрес атакуемой ВМ: `10.0.2.17`.
 
 ### 1.2 Быстрое сканирование nmap
 
 ```bash
-sudo nmap -sV -O -Pn 192.168.1.50
+sudo nmap -sV -O -Pn 10.0.2.17
 ```
-
-Результат:
-
-PORT     STATE SERVICE     VERSION
-21/tcp   open  ftp         vsftpd 2.3.4
-22/tcp   open  ssh         OpenSSH 4.7p1
-23/tcp   open  telnet      Linux telnetd
-25/tcp   open  smtp        Postfix
-53/tcp   open  domain      ISC BIND 9.4.2
-80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu))
-111/tcp  open  rpcbind     2
-139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
-445/tcp  open  netbios-ssn Samba smbd 3.0.20-Debian
-3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
-5432/tcp open  postgresql  PostgreSQL 8.3.0
-8009/tcp open  ajp13       Apache Jserv
-8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1
 
 Скриншот терминала:
 
-img/nmap-scan.png
+![Scan](img/nmap-scan.png)
 
 ### 1.3 Поиск уязвимостей на exploit-db.com
 
@@ -53,9 +36,9 @@ distccd	v1	Command injection	https://www.exploit-db.com/exploits/22243
 
 ### 2.1 Подготовка
 
-Атакующая машина: Kali Linux (IP 192.168.1.100).
-Цель: 192.168.1.50.
-Запущен Wireshark с фильтром host 192.168.1.50.
+Атакующая машина: Kali Linux (IP 10.0.2.16).
+Цель: 10.0.2.17
+Запущен Wireshark с фильтром host 10.0.2.17.
 
 ### 2.2 Сеансы сканирования
 
@@ -63,7 +46,7 @@ distccd	v1	Command injection	https://www.exploit-db.com/exploits/22243
 
 ```bash
 
-sudo nmap -sS -p 80,445 192.168.1.50
+sudo nmap -sS -p 80,445 10.0.2.17
 ```
 
 Трафик: только SYN → SYN/ACK → RST (от нас).
@@ -74,13 +57,13 @@ sudo nmap -sS -p 80,445 192.168.1.50
 
 Скриншот Wireshark:
 
-img/syn-scan.png
+![Syn](img/syn-scan.png)
 
 2) FIN-scan ( stealth-режим, TCP FIN )
 
 ```bash
 
-sudo nmap -sF -p 80,9999 192.168.1.50
+sudo nmap -sF -p 80,9999 10.0.2.17
 ```
 
 Трафик: FIN → RST для закрытых портов; для открытых – вообще ничего (Linux).
@@ -91,24 +74,26 @@ sudo nmap -sF -p 80,9999 192.168.1.50
 
 Скриншот:
 
-img/fin-scan.png
+![Fin](img/fin-scan.png)
 
 3) Xmas-scan (FIN+PSH+URG)
 
 ```bash
 
-sudo nmap -sX -p 22,443 192.168.1.50
+sudo nmap -sX -p 22,443 10.0.2.17
 ```
 
 Поведение аналогично FIN-scan: RST при закрытом порте, тишина – при открытом.
 
 Флаги в Wireshark: FIN, PSH, URG одновременно установлены.
 
+![описание](img/22.png)
+
 4) UDP-scan
 
 ```bash
 
-sudo nmap -sU -p 53,123,999 192.168.1.50
+sudo nmap -sU -p 53,123,999 10.0.2.17
 ```
 
 Трафик: UDP-датаграмма → ICMP-port-unreachable (если закрыт) или молчание (открыт/фильтруется).
@@ -117,7 +102,7 @@ sudo nmap -sU -p 53,123,999 192.168.1.50
 
 Скриншот:
 
-img/udp-scan.png
+![описание](img/udp-scan.png)
 
 ### 2.3 Краткие выводы
 
