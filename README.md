@@ -59,6 +59,8 @@ sudo nmap -sS -p 80,445 10.0.2.17
 
 ![Syn](img/syn-scan.png)
 
+![Wireshark](img/syn-scan2.png)
+
 2) FIN-scan ( stealth-режим, TCP FIN )
 
 ```bash
@@ -76,6 +78,8 @@ sudo nmap -sF -p 80,9999 10.0.2.17
 
 ![Fin](img/fin-scan.png)
 
+![Wireshark](img/fin-scan2.png)
+
 3) Xmas-scan (FIN+PSH+URG)
 
 ```bash
@@ -87,7 +91,9 @@ sudo nmap -sX -p 22,443 10.0.2.17
 
 Флаги в Wireshark: FIN, PSH, URG одновременно установлены.
 
-![описание](img/22.png)
+![Fin](img/22.png)
+
+![Wireshark](img/22_2.png)
 
 4) UDP-scan
 
@@ -102,7 +108,9 @@ sudo nmap -sU -p 53,123,999 10.0.2.17
 
 Скриншот:
 
-![описание](img/udp-scan.png)
+![Udp](img/udp-scan.png)
+
+![Wireshark](img/udp-scan2.png)
 
 ### 2.3 Краткие выводы
 
